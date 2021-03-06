@@ -1,14 +1,10 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
-	"github.com/git-depend/git-depend/pkg/depend"
-	"github.com/git-depend/git-depend/pkg/git"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -32,49 +28,49 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		// Create the cache
-		cache_dir := getCacheDir()
-		cache, err := git.NewCache(cache_dir)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		// // Create the cache
+		// cache_dir := getCacheDir()
+		// cache, err := git.NewCache(cache_dir)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// 	os.Exit(1)
+		// }
 
-		// Create the requests
-		reqs := make([]*depend.Request, len(cfg.Projects))
-		urls := make([]string, len(cfg.Projects))
-		for i := 0; i < len(cfg.Projects); i++ {
-			repo, branch := getRepoBranch(cfg.Projects[i])
-			reqs[i] = depend.NewRequest(
-				repo,
-				branch,
-				cfg.Author,
-				cfg.Email,
-				time.Now().String(),
-				nil)
-			urls[i] = repo
-		}
+		// // Create the requests
+		// reqs := make([]*depend.Request, len(cfg.Projects))
+		// urls := make([]string, len(cfg.Projects))
+		// for i := 0; i < len(cfg.Projects); i++ {
+		// 	repo, branch := getRepoBranch(cfg.Projects[i])
+		// 	reqs[i] = depend.NewRequest(
+		// 		repo,
+		// 		branch,
+		// 		cfg.Author,
+		// 		cfg.Email,
+		// 		time.Now().String(),
+		// 		nil)
+		// 	urls[i] = repo
+		// }
 
-		if _, err := cache.CloneOrUpdateMany(urls); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		// if _, err := cache.CloneOrUpdateMany(urls); err != nil {
+		// 	fmt.Println(err)
+		// 	os.Exit(1)
+		// }
 
-		ref := "git-depend"
-		for _, req := range reqs {
-			if err := req.Write(cache, ref); err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		}
+		// ref := "git-depend"
+		// for _, req := range reqs {
+		// 	if err := req.Write(cache, ref); err != nil {
+		// 		fmt.Println(err)
+		// 		os.Exit(1)
+		// 	}
+		// }
 
-		for _, url := range urls {
-			request := &depend.Request{}
-			request.ReadFromUrl(cache, url, ref)
-			// Prints pretty structs
-			pretty, _ := json.MarshalIndent(request, "", "\t")
-			fmt.Println(string(pretty))
-		}
+		// for _, url := range urls {
+		// 	request := &depend.Request{}
+		// 	request.ReadFromUrl(cache, url, ref)
+		// 	// Prints pretty structs
+		// 	pretty, _ := json.MarshalIndent(request, "", "\t")
+		// 	fmt.Println(string(pretty))
+		// }
 	},
 }
 
