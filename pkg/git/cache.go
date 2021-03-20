@@ -157,3 +157,41 @@ func (cache *Cache) GetRepositories() []string {
 	}
 	return keys
 }
+
+// AddNotes to HEAD in the repository.
+func (cache *Cache) AddNotes(url string, ref string, note string) error {
+	dir, err := cache.GetRepositoryDirectory(url)
+	if err != nil {
+		return err
+	}
+	return AddNotes(dir, ref, note)
+}
+
+// AppendNotes to HEAD in the repository.
+func (cache *Cache) AppendNotes(url string, ref string, note string) error {
+	dir, err := cache.GetRepositoryDirectory(url)
+	if err != nil {
+		return err
+	}
+	return AddNotes(dir, ref, note)
+}
+
+// ListNotes in HEAD in the repository.
+// Returns the stdout if no error.
+func (cache *Cache) ListNotes(url string, ref string) ([]byte, error) {
+	dir, err := cache.GetRepositoryDirectory(url)
+	if err != nil {
+		return nil, err
+	}
+	return ListNotes(dir, ref)
+}
+
+// ShowNotes in HEAD.
+// Returns the stdout if there is no error.
+func (cache *Cache) ShowNotes(url string, ref string) ([]byte, error) {
+	dir, err := cache.GetRepositoryDirectory(url)
+	if err != nil {
+		return nil, err
+	}
+	return ShowNotes(dir, ref)
+}
