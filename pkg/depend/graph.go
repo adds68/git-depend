@@ -63,7 +63,6 @@ func NewGraphFromFile(path string) (*Root, error) {
 			return nil, errors.New(msg)
 		}
 	}
-
 	return newGraphFromRepos(repos)
 }
 

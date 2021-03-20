@@ -20,12 +20,13 @@ func (e *ExitError) Error() string {
 // Simple git execution.
 // Returns the stdout if there is no error.
 // Error can return the stderr if there was an exec.ExitError.
-func execute(command []string) ([]byte, error) {
+func execute(directory string, command []string) ([]byte, error) {
 	cmd := exec.Command("git", command...)
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
+	cmd.Dir = directory
 
 	if err := cmd.Start(); err != nil {
 		return nil, err

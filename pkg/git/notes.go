@@ -38,6 +38,6 @@ func ShowNotes(directory string, ref string) ([]byte, error) {
 // Notes executes git notes on a given directory.
 // Uses ref to namespace.
 func Notes(directory string, ref string, cmds []string) ([]byte, error) {
-	args := append([]string{"-C", directory, "notes", "--ref", ref}, cmds...)
-	return execute(args)
+	args := append([]string{"notes", "--ref", ref}, cmds...)
+	return execute(directory, args)
 }
