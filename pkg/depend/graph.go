@@ -21,6 +21,7 @@ type Node struct {
 	Name string
 	URL  string
 	Deps []*Node
+	Lock *Lock
 }
 
 type NodeCycleError struct {
@@ -62,6 +63,10 @@ func NewGraphFromFile(path string) (*Root, error) {
 	}
 
 	return newGraphFromRepos(repos)
+}
+
+func (root *Root) GetNode(name string) *Node {
+	return root.Table[name]
 }
 
 func newGraphFromRepos(repos map[string]*repo) (*Root, error) {

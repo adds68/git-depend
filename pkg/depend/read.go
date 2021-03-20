@@ -1,5 +1,7 @@
 package depend
 
+// import "github.com/git-depend/git-depend/pkg/git"
+
 // // Read a request from a note.
 // func (req *Request) Read(cache *git.Cache, ref string) error {
 // 	data, err := cache.ShowNotes(req.URL, ref)
