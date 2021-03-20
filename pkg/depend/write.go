@@ -32,9 +32,9 @@ func (lock *Lock) WriteLock(cache *git.Cache, node *Node) error {
 	if err != nil {
 		return err
 	}
-
-	cache.AddNotes(node.URL, lock_name, string(data))
-
+	if err = cache.AddNotes(node.URL, lock_name, string(data)); err != nil {
+		return err
+	}
 	return nil
 }
 
