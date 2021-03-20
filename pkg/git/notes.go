@@ -7,8 +7,8 @@ func (cache *Cache) AddNotes(url string, ref string, note string) error {
 		return err
 	}
 	args := []string{"add", "-m", note}
-	_, r := Notes(dir, ref, args)
-	return r
+	_, err = Notes(dir, ref, args)
+	return err
 }
 
 // ForceAddNotes to HEAD in the repository.
@@ -18,8 +18,8 @@ func (cache *Cache) ForceAddNotes(url string, ref string, note string) error {
 		return err
 	}
 	args := []string{"add", "-f", "-m", note}
-	_, r := Notes(dir, ref, args)
-	return r
+	_, err = Notes(dir, ref, args)
+	return err
 }
 
 // AppendNotes to HEAD in the repository.
@@ -29,8 +29,8 @@ func (cache *Cache) AppendNotes(url string, ref string, note string) error {
 		return err
 	}
 	args := []string{"append", "-m", note}
-	_, r := Notes(dir, ref, args)
-	return r
+	_, err = Notes(dir, ref, args)
+	return err
 }
 
 // ListNotes in HEAD in the repository.

@@ -6,6 +6,6 @@ func Update(url string, directory string) error {
 		directory,
 		"fetch",
 	}
-	_, r := execute(args)
-	return r
+	_, err := execute(args)
+	return err
 }

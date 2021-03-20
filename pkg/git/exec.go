@@ -2,7 +2,6 @@ package git
 
 import (
 	"bytes"
-	"fmt"
 	"os/exec"
 )
 
@@ -15,7 +14,7 @@ type ExitError struct {
 
 // Return the stderr output.
 func (e *ExitError) Error() string {
-	return fmt.Sprintf(string(e.Stderr))
+	return string(e.Stderr)
 }
 
 // Simple git execution.

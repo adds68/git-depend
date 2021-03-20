@@ -5,12 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"sync"
 
 	"github.com/git-depend/git-depend/pkg/utils"
 )
 
 // Root node only contains its direct dependencies.
 type Root struct {
+	Version    string
 	Table      map[string]*Node
 	Deps       []*Node
 	reposTable map[string]*repo
@@ -18,10 +20,10 @@ type Root struct {
 
 // Node of the tree.
 type Node struct {
+	sync.Mutex
 	Name string
 	URL  string
 	Deps []*Node
-	Lock *Lock
 }
 
 type NodeCycleError struct {
@@ -65,8 +67,10 @@ func NewGraphFromFile(path string) (*Root, error) {
 	return newGraphFromRepos(repos)
 }
 
-func (root *Root) GetNode(name string) *Node {
-	return root.Table[name]
+// GetNode will return the node and a bool for if it exists.
+func (root *Root) GetNode(name string) (*Node, bool) {
+	node, ok := root.Table[name]
+	return node, ok
 }
 
 func newGraphFromRepos(repos map[string]*repo) (*Root, error) {

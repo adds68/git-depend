@@ -3,7 +3,6 @@ package depend
 import "errors"
 
 // Request holds all the information about the merge which is taking place.
-// Dependencies will only contain the URL and Branch.
 type Request struct {
 	Name   string `json:"Name"`
 	From   string `json:"From"`
@@ -18,18 +17,28 @@ type Requests struct {
 	NodesRoot *Root
 }
 
+type MergeRequestsError struct {
+}
+
+func (e *MergeRequestsError) Error() string {
+	return ""
+}
+
+// NewRequests returns a new Requests struct.
 func NewRequests(root *Root) *Requests {
 	return &Requests{
+		Table:     make(map[string]*Request),
 		NodesRoot: root,
 	}
 }
 
+// AddRequest for merging.
 func (requests *Requests) AddRequest(name string, from string, to string, author string, email string) error {
-	if _, ok := requests.Table[name]; !ok {
+	if _, ok := requests.Table[name]; ok {
 		return errors.New("Request already exists")
 	}
 
-	if node := requests.NodesRoot.GetNode(name); node != nil {
+	if _, ok := requests.NodesRoot.GetNode(name); !ok {
 		return errors.New("Node does not exist")
 	}
 
@@ -37,7 +46,7 @@ func (requests *Requests) AddRequest(name string, from string, to string, author
 	return nil
 }
 
-// NewRequest creates the Request struct from the given fields
+// newRequest creates the Request struct from the given fields
 func newRequest(name string, from string, to string, author string, email string) *Request {
 	return &Request{
 		Name:   name,

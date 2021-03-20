@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var test_data string = `
+var test_data_simple_graph string = `
 [
 	{
 		"Name": "foo",
@@ -27,7 +27,7 @@ var test_data string = `
 ]
 `
 
-var test_data_circular string = `
+var test_data_simple_circular_graph string = `
 [
 	{
 		"Name": "foo",
@@ -78,7 +78,7 @@ var test_data_multi_root string = `
 `
 
 func TestNewTableFromFile(t *testing.T) {
-	temp_file := writeJson(t, test_data)
+	temp_file := writeJson(t, test_data_simple_graph)
 
 	root, err := NewGraphFromFile(temp_file)
 	if err != nil {
@@ -108,7 +108,7 @@ func TestNewTableFromFile(t *testing.T) {
 }
 
 func TestCreateRoot(t *testing.T) {
-	temp_file := writeJson(t, test_data)
+	temp_file := writeJson(t, test_data_simple_graph)
 
 	root, err := NewGraphFromFile(temp_file)
 	if err != nil {
@@ -129,7 +129,7 @@ func TestCreateRoot(t *testing.T) {
 }
 
 func TestCiruclar(t *testing.T) {
-	temp_file := writeJson(t, test_data_circular)
+	temp_file := writeJson(t, test_data_simple_circular_graph)
 	_, err := NewGraphFromFile(temp_file)
 	if err == nil {
 		t.Fatal("No cycle detected.")
@@ -168,6 +168,16 @@ func TestMultiRoot(t *testing.T) {
 			}
 		}
 	}
+}
+
+func createSimpleGraph(t *testing.T, data string) *Root {
+	temp_file := writeJson(t, data)
+
+	root, err := NewGraphFromFile(temp_file)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return root
 }
 
 // Writes json data to a file and returns the file path.
