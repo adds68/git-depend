@@ -14,7 +14,7 @@ const (
 	Locked Status = "Locked"
 )
 
-var lock_name string = ""
+var lock_name string = "git-depend-lock"
 
 // Lock allows us to safely write to a note.
 type Lock struct {
@@ -32,10 +32,12 @@ func (lock *Lock) WriteLock(cache *git.Cache, node *Node) error {
 	if err != nil {
 		return err
 	}
+
 	if err = cache.AddNotes(node.URL, lock_name, string(data)); err != nil {
 		return err
 	}
-	return nil
+
+	return cache.PushNotes(node.URL, lock_name)
 }
 
 func (lock *Lock) WriteUnlock(id string) {

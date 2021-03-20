@@ -195,3 +195,11 @@ func (cache *Cache) ShowNotes(url string, ref string) ([]byte, error) {
 	}
 	return ShowNotes(dir, ref)
 }
+
+func (cache *Cache) PushNotes(url string, ref string) error {
+	dir, err := cache.GetRepositoryDirectory(url)
+	if err != nil {
+		return err
+	}
+	return PushNotes("origin", dir, ref)
+}
