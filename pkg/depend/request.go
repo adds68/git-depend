@@ -42,17 +42,12 @@ func (requests *Requests) AddRequest(name string, from string, to string, author
 		return errors.New("Node does not exist")
 	}
 
-	requests.Table[name] = newRequest(name, from, to, author, email)
-	return nil
-}
-
-// newRequest creates the Request struct from the given fields
-func newRequest(name string, from string, to string, author string, email string) *Request {
-	return &Request{
+	requests.Table[name] = &Request{
 		Name:   name,
 		From:   from,
 		To:     to,
 		Author: author,
 		Email:  email,
 	}
+	return nil
 }

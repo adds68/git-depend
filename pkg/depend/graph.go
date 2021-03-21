@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"sync"
 
 	"github.com/git-depend/git-depend/pkg/utils"
 )
@@ -20,7 +19,6 @@ type Root struct {
 
 // Node of the tree.
 type Node struct {
-	sync.Mutex
 	Name string
 	URL  string
 	Deps []*Node
@@ -47,11 +45,19 @@ type repo struct {
 // NewGraphFromFile unmarshalls JSON from a file into a graph.
 func NewGraphFromFile(path string) (*Root, error) {
 	// Read and parse the data.
-	reps, err := newReposFromFile(path)
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
+	return NewGraph(data)
+}
 
+// NewGraph reads in the JSON data and creates the graph.
+func NewGraph(data []byte) (*Root, error) {
+	var reps []*repo
+	if err := json.Unmarshal(data, &reps); err != nil {
+		return nil, err
+	}
 	// Collect all the entries and check for duplications.
 	repos := make(map[string]*repo)
 	for _, repo := range reps {
@@ -59,8 +65,7 @@ func NewGraphFromFile(path string) (*Root, error) {
 		if _, ok := repos[repo.Name]; !ok {
 			repos[repo.Name] = repo
 		} else {
-			msg := fmt.Sprintf("Deuplicate key: %s\nPath: %s\n", repo.Name, path)
-			return nil, errors.New(msg)
+			return nil, errors.New("Duplicate key: " + repo.Name)
 		}
 	}
 	return newGraphFromRepos(repos)
@@ -70,6 +75,26 @@ func NewGraphFromFile(path string) (*Root, error) {
 func (root *Root) GetNode(name string) (*Node, bool) {
 	node, ok := root.Table[name]
 	return node, ok
+}
+
+// GetChildren returns a flat list of all children.
+// Does not contain duplicates.
+func (node *Node) GetChildren() []*Node {
+	visited := utils.NewSet()
+	var children []*Node
+	for _, d := range node.Deps {
+		if !visited.Exists(d.Name) {
+			visited.Add(d.Name)
+			children = append(children, d)
+		}
+		for _, c := range d.GetChildren() {
+			if !visited.Exists(c.Name) {
+				visited.Add(c.Name)
+				children = append(children, c)
+			}
+		}
+	}
+	return children
 }
 
 func newGraphFromRepos(repos map[string]*repo) (*Root, error) {
@@ -162,19 +187,4 @@ func (root *Root) createGraph() {
 		root.Deps[i] = v
 		i++
 	}
-}
-
-// newReposFromFile reads json from a file and returns a list of repos.
-func newReposFromFile(path string) ([]*repo, error) {
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	var repos []*repo
-	if err := json.Unmarshal(data, &repos); err != nil {
-		return nil, err
-	}
-
-	return repos, nil
 }

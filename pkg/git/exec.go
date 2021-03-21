@@ -2,6 +2,7 @@ package git
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 )
 
@@ -28,6 +29,9 @@ func execute(directory string, command []string) ([]byte, error) {
 	cmd.Stderr = &stderr
 	cmd.Dir = directory
 
+	fmt.Println("dir: " + directory)
+	fmt.Println(cmd)
+
 	if err := cmd.Start(); err != nil {
 		return nil, err
 	}
@@ -40,6 +44,7 @@ func execute(directory string, command []string) ([]byte, error) {
 				err,
 			}
 		}
+		fmt.Println(stdout.String())
 		return nil, err
 	}
 
