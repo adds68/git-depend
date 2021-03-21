@@ -97,22 +97,22 @@ func createLocalGitCache(t *testing.T) *git.Cache {
 func createLocalGitRepo(t *testing.T) string {
 	dir := t.TempDir()
 
-	cmd := exec.Command("git", "init")
-	cmd.Dir = dir
+	cmd := exec.Command("git", "config", "user.email", "you@example.com")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(string(out))
 		t.Fatal("Failed to create local git repo: " + err.Error())
 	}
 
-	cmd = exec.Command("git", "config", "user.email", "you@example.com")
+	cmd = exec.Command("git", "config", "user.name", "Your Name")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(string(out))
 		t.Fatal("Failed to create local git repo: " + err.Error())
 	}
 
-	cmd = exec.Command("git", "config", "user.name", "Your Name")
+	cmd = exec.Command("git", "init")
+	cmd.Dir = dir
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(string(out))
