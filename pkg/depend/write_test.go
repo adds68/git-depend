@@ -105,6 +105,20 @@ func createLocalGitRepo(t *testing.T) string {
 		t.Fatal("Failed to create local git repo: " + err.Error())
 	}
 
+	cmd = exec.Command("git", "config", "user.email", "you@example.com")
+	out, err = cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(string(out))
+		t.Fatal("Failed to create local git repo: " + err.Error())
+	}
+
+	cmd = exec.Command("git", "config", "user.name", "Your Name")
+	out, err = cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(string(out))
+		t.Fatal("Failed to create local git repo: " + err.Error())
+	}
+
 	emptyFile, err := os.Create(path.Join(dir, "emptyFile.txt"))
 	if err != nil {
 		t.Fatal("Failed to create file: " + err.Error())
